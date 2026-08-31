@@ -1,0 +1,25 @@
+---
+description: Lock UI edits to the selected Format preview. Desktop applies to all devices; iPhone and iPad are overrides only.
+alwaysApply: true
+---
+
+# Format preview locks
+
+LOTAGENT has three layout formats. The local `next dev` Format bar (iPhone / iPad / Desktop) picks which one you are editing.
+
+| Selected | True size | Edit file | Scope |
+|----------|-----------|-----------|--------|
+| **iPhone** | 390×844 | `src/app/format/iphone.css` | That device only |
+| **iPad** | 834×1194 | `src/app/format/ipad.css` | That device only |
+| **Desktop** | full window | `src/app/format/desktop.css` | **All devices** (shared source of truth) |
+
+## Rules
+
+1. If Format is **iPhone**, change only iPhone. Put CSS in `iphone.css` inside `@container la (max-width: 560px)`. Do not edit `ipad.css` or `desktop.css`.
+2. If Format is **iPad**, change only iPad. Put CSS in `ipad.css` inside `@container la (min-width: 561px) and (max-width: 960px)`. Do not edit `iphone.css` or `desktop.css`.
+3. If Format is **Desktop**, put shared layout in `desktop.css`. Those styles apply on every device unless iPhone or iPad files override them. Do not add iPhone-only or iPad-only hacks in `desktop.css`.
+4. Do **not** add format-specific layout to `src/app/globals.css`. Shared tokens and colors stay there.
+5. `html[data-la-format]` / `.phone-sim` / `.tablet-sim` / `src/app/format/shell.css` are **device chrome only** (bezel, studio bar, scroll lock). Not product layout.
+6. Real phones and iPads use the same `@container la` queries, so preview edits ship as the real responsive version.
+
+The Format bar is development-only. It never ships to Vercel.

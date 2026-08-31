@@ -143,3 +143,5 @@
     font-variant-numeric: tabular-nums;
   }
 }
+
+/* Format layouts: src/app/format/{desktop,ipad,iphone,shell}.css via @container la. */

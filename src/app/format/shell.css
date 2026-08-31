@@ -1,0 +1,446 @@
+/* Dev Format studio + device bezels. Never used for production layout. */
+
+.la-root {
+  container-type: inline-size;
+  container-name: la;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+}
+
+.la-studio {
+  min-height: 100dvh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #f4f6f9;
+}
+
+.la-studioBar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #1d3a50;
+  background: #0c1c2a;
+  color: #d5e0eb;
+  z-index: 2147483001;
+}
+
+.la-studioBar b {
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7ec8ea;
+}
+
+.la-studioBar small {
+  display: block;
+  margin-top: 2px;
+  color: #7f93ab;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.la-studioBarTools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.la-rotateBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #2d5270;
+  border-radius: 8px;
+  background: #12324a;
+  color: #9aadc0;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.la-rotateBtn:hover,
+.la-rotateBtn.on {
+  color: #fff;
+  background: #1565ff;
+  border-color: #1565ff;
+}
+
+.la-formatToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid #2d5270;
+  border-radius: 10px;
+  background: #12324a;
+}
+
+.la-formatToggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #9aadc0;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.la-formatToggle button.on {
+  background: #1565ff;
+  color: #fff;
+}
+
+.la-formatToggle button:hover:not(.on) {
+  color: #edf5ff;
+  background: #1d4260;
+}
+
+.la-studio > .la-root {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.la-studioStage {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 16px;
+  background:
+    radial-gradient(ellipse 50% 40% at 50% 0%, #1a3c54 0%, transparent 60%),
+    #071018;
+}
+
+.la-deviceScale {
+  transform-origin: center center;
+}
+
+.la-iphone {
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+  padding: 12px;
+  border-radius: 54px;
+  background: linear-gradient(180deg, #2a2d31 0%, #111214 55%, #0a0b0d 100%);
+  box-shadow:
+    0 0 0 1px #3a3d42,
+    0 24px 60px #00000080,
+    inset 0 1px 0 #ffffff22;
+}
+
+.la-iphone .la-deviceGlass {
+  position: relative;
+  width: 390px;
+  height: 844px;
+  overflow: hidden;
+  border-radius: 42px;
+  background: #f4f6f9;
+  isolation: isolate;
+  transform: translateZ(0);
+  box-shadow: inset 0 0 0 1px #00000055;
+}
+
+.la-iphoneIsland {
+  position: absolute;
+  z-index: 5;
+  top: 10px;
+  left: 50%;
+  width: 118px;
+  height: 34px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #0a0b0d;
+  box-shadow: inset 0 0 0 1px #00000080;
+}
+
+.la-iphoneStatus {
+  position: absolute;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 22px 0;
+  color: #0b1f3a;
+  font: 600 14px/1 system-ui, -apple-system, sans-serif;
+  pointer-events: none;
+}
+
+.la-iphoneStatus .la-statusIcons {
+  gap: 6px;
+}
+
+.la-iphoneStatus .la-statusSignal,
+.la-iphoneStatus .la-statusWifi {
+  width: 16px;
+  height: 13px;
+}
+
+.la-iphoneStatus .la-statusBattery {
+  width: 24px;
+  height: 13px;
+}
+
+.la-iphoneHome {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 8px;
+  width: 128px;
+  height: 5px;
+  transform: translateX(-50%);
+  border-radius: 99px;
+  background: #0b1f3a66;
+  pointer-events: none;
+}
+
+.la-iphone.landscape {
+  border-radius: 40px;
+}
+
+.la-iphone.landscape .la-deviceGlass {
+  border-radius: 28px;
+}
+
+.la-iphone.landscape .la-iphoneIsland {
+  width: 100px;
+  height: 26px;
+  top: 7px;
+}
+
+.la-iphone.landscape .la-iphoneStatus {
+  height: 36px;
+  padding: 8px 36px 0;
+}
+
+.la-iphone.landscape .la-iphoneHome {
+  width: 160px;
+  bottom: 6px;
+}
+
+.la-ipad {
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+  padding: 18px;
+  border-radius: 36px;
+  background: linear-gradient(180deg, #3a3d42 0%, #1c1e22 60%, #121316 100%);
+  box-shadow:
+    0 0 0 1px #4a4e55,
+    0 28px 70px #00000088,
+    inset 0 1px 0 #ffffff18;
+}
+
+.la-ipad .la-deviceGlass {
+  position: relative;
+  width: 834px;
+  height: 1194px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #f4f6f9;
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+.la-ipadCam {
+  position: absolute;
+  z-index: 5;
+  top: 7px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: #0e1116;
+  box-shadow: inset 0 0 0 2px #1a1d22, 0 0 0 1px #5a5e66;
+}
+
+.la-ipadStatus {
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 28px 14px;
+  color: #0b1f3a;
+  font: 600 15px/1 system-ui, -apple-system, sans-serif;
+  pointer-events: none;
+}
+
+.la-statusIcons {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.la-ipadStatus .la-statusIcons {
+  gap: 10px;
+}
+
+.la-statusIcons svg {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.la-ipadStatus .la-statusSignal,
+.la-ipadStatus .la-statusWifi {
+  width: 18px;
+  height: 15px;
+}
+
+.la-ipadStatus .la-statusBattery {
+  width: 27px;
+  height: 15px;
+}
+
+.la-ipadHome {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 6px;
+  width: 180px;
+  height: 5px;
+  transform: translateX(-50%);
+  border-radius: 99px;
+  background: #0b1f3a55;
+  pointer-events: none;
+}
+
+.la-ipad.landscape {
+  border-radius: 28px;
+}
+
+.la-ipad.landscape .la-deviceGlass {
+  border-radius: 16px;
+}
+
+.la-ipad.landscape .la-ipadStatus {
+  height: 36px;
+  padding: 6px 32px 8px;
+}
+
+.la-ipad.landscape .la-ipadHome {
+  width: 220px;
+}
+
+.la-formatScroll {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.la-formatScroll::-webkit-scrollbar {
+  display: none;
+}
+
+html[data-la-format="iphone"],
+html[data-la-format="ipad"] {
+  overflow: hidden;
+}
+
+html[data-la-format="iphone"] body,
+html[data-la-format="ipad"] body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+html[data-la-format="iphone"] .la,
+html[data-la-format="ipad"] .la {
+  min-height: 0;
+  height: auto;
+}
+
+html[data-la-format="iphone"] .la-root,
+html[data-la-format="ipad"] .la-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+html[data-la-format="iphone"] .la-formatScroll {
+  overflow: hidden;
+  padding-top: 52px;
+  padding-bottom: 14px;
+}
+
+html[data-la-format="iphone"][data-la-orient="landscape"] .la-formatScroll {
+  padding-top: 36px;
+  padding-bottom: 10px;
+}
+
+html[data-la-format="ipad"] .la-formatScroll {
+  overflow: hidden;
+  padding-top: 44px;
+  padding-bottom: 14px;
+}
+
+html[data-la-format="ipad"][data-la-orient="landscape"] .la-formatScroll {
+  padding-top: 32px;
+  padding-bottom: 10px;
+}
+
+html[data-la-format="desktop"],
+html[data-la-format="desktop"] body {
+  height: 100%;
+  overflow: hidden;
+}
+
+html[data-la-format="desktop"] .la-studio {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  background: transparent;
+}
+
+html[data-la-format="desktop"] .la-studio > .la-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+html[data-la-format="desktop"] .la {
+  min-height: 0;
+  height: auto;
+  max-height: none;
+}
+
+html[data-la-format="desktop"] .la-studioStage {
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+}

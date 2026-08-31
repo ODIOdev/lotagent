@@ -1,0 +1,478 @@
+/* DESKTOP FORMAT — source of truth.
+   Edits here apply to every device unless iPhone or iPad files override them.
+   Edit this file when Format is Desktop. */
+
+.la {
+  min-height: 0;
+  background: #e8edf3;
+  color: #0b1f3a;
+}
+
+.la-root > .la-app,
+.la-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.la-app > .la {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.la.home,
+.la.page {
+  padding: 24px 36px 28px;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.homeHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #c9d4e0;
+}
+
+.homeMark {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.32em;
+  color: #1565ff;
+}
+
+.homeHead h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+  color: #3d4f66;
+}
+
+.homeGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 18px;
+  align-items: start;
+}
+
+.homeSheet {
+  background: #fff;
+  border: 1px solid #c9d4e0;
+  border-radius: 4px 20px 20px 4px;
+  border-left: 4px solid #0b1f3a;
+  box-shadow: 0 10px 30px #0b1f3a0d;
+  overflow: hidden;
+}
+
+.homeBlock {
+  padding: 20px 22px 22px;
+}
+
+.homeBlock + .homeBlock {
+  border-top: 1px solid #e4ebf2;
+}
+
+.homeBlockHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.homeBlockHead h2 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.homeBlockHead p {
+  margin: 3px 0 0;
+  color: #5b6b80;
+  font-size: 12px;
+}
+
+.homeBlockHead > b,
+.homeBlockTools b {
+  font-size: 16px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.homeBlockTools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.homeTextBtn {
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid #c9d4e0;
+  border-radius: 6px;
+  background: #fff;
+  color: #3d4f66;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.homeTextBtn:hover,
+.homeTextBtn.on {
+  border-color: #0b1f3a;
+  background: #0b1f3a;
+  color: #fff;
+}
+
+.homeSrOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.homeField {
+  display: grid;
+  gap: 6px;
+}
+
+.homeField label {
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5b6b80;
+}
+
+.homeField small {
+  color: #5b6b80;
+  font-size: 12px;
+}
+
+.homeInline {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  align-items: end;
+  gap: 14px;
+}
+
+.homeInline .homeHint {
+  margin: 0 0 10px;
+}
+
+.homeSaveRow {
+  display: grid;
+  grid-template-columns: minmax(0, 160px) auto;
+  align-items: end;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.homeSaveRow .homeTextBtn {
+  height: 44px;
+  padding: 0 16px;
+}
+
+.homeCard [data-slot="input"],
+.homeSheet [data-slot="input"],
+.homeSelect {
+  height: 44px;
+  width: 100%;
+  font-size: 16px;
+  background: #f4f7fb;
+}
+
+.homeSelect {
+  appearance: none;
+  border: 1px solid #c9d4e0;
+  border-radius: 8px;
+  padding: 0 34px 0 12px;
+  color: #0b1f3a;
+  font-weight: 650;
+  background-color: #f4f7fb;
+  background-image: linear-gradient(45deg, transparent 50%, #5b6b80 50%),
+    linear-gradient(135deg, #5b6b80 50%, transparent 50%);
+  background-position:
+    calc(100% - 16px) 50%,
+    calc(100% - 10px) 50%;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.homeSelect:focus {
+  outline: none;
+  border-color: #1565ff;
+  box-shadow: 0 0 0 3px #1565ff2e;
+  background-color: #fff;
+}
+
+.homeZip {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
+  font-weight: 750;
+}
+
+.homeMoney {
+  display: flex;
+  align-items: center;
+  border: 1px solid #c9d4e0;
+  border-radius: 8px;
+  background: #f4f7fb;
+  overflow: hidden;
+}
+
+.homeMoney:focus-within {
+  border-color: #1565ff;
+  background: #fff;
+  box-shadow: 0 0 0 3px #1565ff2e;
+}
+
+.homeMoney span,
+.homeMoney em {
+  flex: 0 0 auto;
+  padding: 0 12px;
+  color: #5b6b80;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 750;
+}
+
+.homeMoney [data-slot="input"] {
+  height: 44px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.homeMoney [data-slot="input"]:focus-visible {
+  border: 0;
+  box-shadow: none;
+}
+
+.homeMoneyLarge {
+  border-radius: 10px;
+}
+
+.homeMoneyLarge span {
+  font-size: 24px;
+  padding: 0 16px 0 18px;
+}
+
+.homeMoneyLarge [data-slot="input"] {
+  height: 68px;
+  font-size: 36px;
+  letter-spacing: -0.04em;
+}
+
+.homeBreakdown {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.homeBreakdown li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  color: #5b6b80;
+  font-size: 13px;
+  border-top: 1px solid #eef2f6;
+}
+
+.homeBreakdown b {
+  color: #0b1f3a;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+
+.homeHint {
+  margin: 10px 0 0;
+  color: #5b6b80;
+  font-size: 13px;
+}
+
+.homeRoute {
+  display: grid;
+  grid-template-columns: 1fr 36px 1fr;
+  align-items: start;
+  gap: 6px;
+}
+
+.homeRouteArrow {
+  display: block;
+  height: 2px;
+  margin: 34px 4px 0;
+  background: #1565ff;
+  position: relative;
+}
+
+.homeRouteArrow::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #1565ff;
+  border-top: 2px solid #1565ff;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.homeRateRow {
+  display: grid;
+  grid-template-columns: 1.15fr 0.9fr 0.9fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.homeMiles {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 68px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #0b1f3a;
+  color: #fff;
+}
+
+.homeMiles em {
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7ec8ea;
+}
+
+.homeMiles strong {
+  margin-top: 4px;
+  font-size: 20px;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.homeMiles.is-loading strong {
+  color: #93a4bb;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.homeTicket {
+  position: sticky;
+  top: 16px;
+  padding: 22px 20px 20px;
+  border-radius: 4px 16px 16px 4px;
+  background: #0b1f3a;
+  color: #e8eef6;
+  box-shadow: 0 16px 36px #0b1f3a2e;
+}
+
+.homeTicket::before {
+  content: "";
+  display: block;
+  height: 3px;
+  margin: -22px -20px 16px;
+  background: #1565ff;
+}
+
+.homeTicketKicker {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #7ec8ea;
+}
+
+.homeTicketTotal {
+  margin: 8px 0 16px;
+  font-size: 36px;
+  font-weight: 750;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+}
+
+.homeTicket dl {
+  margin: 0;
+  padding-top: 8px;
+  border-top: 1px solid #1c3558;
+}
+
+.homeTicket dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+}
+
+.homeTicket dt {
+  color: #93a4bb;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.homeTicket dd {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+}
+
+.homeNav {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  height: 64px;
+  background: #fff;
+  border-top: 1px solid #c9d4e0;
+  z-index: 20;
+}
+
+.homeNav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #5b6b80;
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.homeNav a svg {
+  width: 18px;
+  height: 18px;
+}
+
+.homeNav a.on {
+  color: #1565ff;
+}

@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "next-themes";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Toaster } from "@/components/ui/sonner";
-import { AuthGate } from "@/components/layout/auth-gate";
+import { AppNav } from "@/components/app-nav";
+import { FormatPreview } from "@/components/dev/format-preview";
 import "./globals.css";
+import "./format/desktop.css";
+import "./format/ipad.css";
+import "./format/iphone.css";
+import "./format/shell.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,14 +20,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "LOTAGENT",
-  description: "Auction acquisition planning for automotive dealers and wholesale buyers.",
+  description: "Auction acquisition planning.",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#0b1f3a",
 };
 
 export default function RootLayout({
@@ -34,16 +35,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full min-w-0 bg-background text-foreground">
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-          <TooltipProvider>
-            <AuthGate>{children}</AuthGate>
-          </TooltipProvider>
-          <Toaster />
-        </ThemeProvider>
+      <body className="h-full min-h-full min-w-0 max-w-full bg-background text-foreground">
+        <FormatPreview>
+          <div className="la-app">
+            {children}
+            <AppNav />
+          </div>
+        </FormatPreview>
       </body>
     </html>
   );

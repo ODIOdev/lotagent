@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateAuctionFees, calculateBuyerFee, matchingTier } from "@/lib/calc/fees";
+import { calculateAuctionFees, calculateBuyerFee, calculateTransportEstimate, matchingTier } from "@/lib/calc/fees";
 import type { AuctionFeeSchedule, BuyerFeeConfig } from "@/lib/types";
 
 const tiered: BuyerFeeConfig = {
@@ -96,5 +96,21 @@ describe("full fee schedule", () => {
       2500,
     );
     expect(onFees.tax).toBeCloseTo(onFees.total - (onFees.buyerFee + 79 + 25 + 80 + 40), 2);
+  });
+});
+
+describe("transport estimate", () => {
+  it("charges miles times rate plus pickup", () => {
+    expect(
+      calculateTransportEstimate({
+        distance: 1000,
+        costPerMile: 1.35,
+        flatPickupCharge: 95,
+        inoperableSurcharge: 0,
+        enclosedSurcharge: 0,
+        urgentSurcharge: 0,
+        tollEstimate: 0,
+      }),
+    ).toBe(1445);
   });
 });

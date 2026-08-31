@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "seed": "node scripts/seed.mjs"
+    "seed": "node scripts/seed.mjs",
+    "catalog:build": "node scripts/build-vehicle-catalog.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

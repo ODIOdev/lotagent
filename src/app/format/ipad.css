@@ -1,0 +1,74 @@
+/* IPAD FORMAT — edit only when Format is iPad.
+   True size: 834×1194. Does not change iPhone or Desktop. */
+
+@container la (min-width: 561px) and (max-width: 960px) {
+  .la.home,
+  .la.page {
+    padding: 18px 18px 20px;
+  }
+
+  .homeGrid {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .homeTicket {
+    order: -1;
+    position: static;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 8px 24px;
+  }
+
+  .homeTicketKicker {
+    grid-column: 1;
+  }
+
+  .homeTicketTotal {
+    grid-column: 1;
+    margin: 6px 0 0;
+  }
+
+  .homeTicket dl {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 160px;
+  }
+
+  .homeBlock {
+    padding: 16px 16px 18px;
+  }
+
+  .homeInline {
+    grid-template-columns: 140px minmax(0, 1fr);
+  }
+
+  .homeMoneyLarge [data-slot="input"] {
+    height: 58px;
+    font-size: 30px;
+  }
+
+  .homeTicket {
+    top: 12px;
+    padding: 18px 16px 16px;
+  }
+
+  .homeTicket::before {
+    margin: -18px -16px 14px;
+  }
+
+  .homeTicketTotal {
+    font-size: 30px;
+  }
+
+  .homeNav {
+    height: 62px;
+  }
+}
