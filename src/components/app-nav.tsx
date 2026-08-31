@@ -3,7 +3,8 @@
 import { APP_NAV } from "@/lib/nav";
 import { Bookmark, CircleDollarSign, Package, Settings } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const ICONS = {
   "/": CircleDollarSign,
@@ -12,10 +13,18 @@ const ICONS = {
   "/settings": Settings,
 } as const;
 
+function currentQuery() {
+  if (typeof window === "undefined") return "";
+  return window.location.search.replace(/^\?/, "");
+}
+
 export function AppNav() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const query = searchParams.toString();
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    setQuery(currentQuery());
+  }, [pathname]);
 
   return (
     <nav className="homeNav" aria-label="Main">

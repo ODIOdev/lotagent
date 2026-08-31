@@ -17,8 +17,7 @@ import {
   type FormatOrient,
 } from "@/lib/format-preview";
 import { Monitor, RotateCw, Smartphone, Tablet } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 
 function StatusTime() {
   const [now, setNow] = useState(() => new Date());
@@ -60,18 +59,18 @@ function SignalIcons() {
 }
 
 function useFormatMode() {
-  const searchParams = useSearchParams();
   const [mode, setMode] = useState<FormatMode>("desktop");
   const [orient, setOrient] = useState<FormatOrient>("portrait");
 
   useEffect(() => {
-    const fromQuery = parseFormatMode(searchParams.get("format"));
+    const params = new URLSearchParams(window.location.search);
+    const fromQuery = parseFormatMode(params.get("format"));
     const fromStore = parseFormatMode(window.sessionStorage.getItem(FORMAT_STORAGE_KEY));
     setMode(fromQuery ?? fromStore ?? "desktop");
-    const orientQuery = parseFormatOrient(searchParams.get("orient"));
+    const orientQuery = parseFormatOrient(params.get("orient"));
     const orientStore = parseFormatOrient(window.sessionStorage.getItem(FORMAT_ORIENT_KEY));
     setOrient(orientQuery ?? orientStore ?? "portrait");
-  }, [searchParams]);
+  }, []);
 
   useEffect(() => {
     function onSet(event: Event) {
@@ -281,9 +280,5 @@ export function FormatPreview({ children }: { children: ReactNode }) {
     return <div className="la-root">{children}</div>;
   }
 
-  return (
-    <Suspense fallback={<div className="la-root">{children}</div>}>
-      <FormatPreviewInner>{children}</FormatPreviewInner>
-    </Suspense>
-  );
+  return <FormatPreviewInner>{children}</FormatPreviewInner>;
 }

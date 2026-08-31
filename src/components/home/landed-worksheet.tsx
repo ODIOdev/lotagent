@@ -13,7 +13,7 @@ import { isZip, normalizeZip, type ZipPlace } from "@/lib/geo/zip";
 import { VehicleCard } from "@/components/home/vehicle-card";
 import { saveWorksheet } from "@/lib/data/worksheets";
 import { Input } from "@/components/ui/input";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const DEFAULT_DELIVERY_ZIP = "17545";
@@ -84,7 +84,6 @@ function placeLine(place: ZipPlace | null, zip: string, empty: string) {
 
 export function LandedWorksheet() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [sheetKey, setSheetKey] = useState(0);
   const [buyPrice, setBuyPrice] = useState("");
   const [scheduleId, setScheduleId] = useState(FEE_PRESETS[0]?.id ?? "fee-manheim");
@@ -133,7 +132,7 @@ export function LandedWorksheet() {
   const landed = roundMoney(bid + auctionFee + transportFee);
 
   function go(path: string) {
-    const query = searchParams.toString();
+    const query = typeof window === "undefined" ? "" : window.location.search.replace(/^\?/, "");
     router.push(query ? `${path}?${query}` : path);
   }
 
