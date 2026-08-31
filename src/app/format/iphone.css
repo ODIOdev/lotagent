@@ -2,12 +2,20 @@
    True size: 390×844. Does not change iPad or Desktop. */
 
 @container la (max-width: 560px) {
+  .la-app {
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
   .la.home,
   .la.page {
-    flex: 1 1 auto;
+    flex: 1 1 0;
     min-width: 0;
     max-width: 100%;
     min-height: 0;
+    height: 0;
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -266,6 +274,7 @@
   }
 
   .homeNav {
+    flex: 0 0 auto;
     height: calc(58px + env(safe-area-inset-bottom));
     padding-bottom: env(safe-area-inset-bottom);
   }
