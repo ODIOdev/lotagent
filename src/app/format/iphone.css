@@ -1,12 +1,39 @@
 /* IPHONE FORMAT — edit only when Format is iPhone.
    True size: 390×844. Does not change iPad or Desktop. */
 
+/* Real phones have no Format chrome, so .la-root only has min-height.
+   height: 100% / 0 then collapses the worksheet. Fill the viewport here;
+   skip when html[data-la-format] is set so the iPhone frame still sizes the app. */
+@media (max-width: 560px) {
+  html:not([data-la-format]),
+  html:not([data-la-format]) body {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+
+  html:not([data-la-format]) .la-root,
+  html:not([data-la-format]) .la-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
 @container la (max-width: 560px) {
   .la-app {
     height: 100%;
     max-height: 100%;
     min-height: 0;
     overflow: hidden;
+  }
+
+  html:not([data-la-format]) .la-app {
+    height: 100dvh;
+    max-height: 100dvh;
   }
 
   .la.home,
