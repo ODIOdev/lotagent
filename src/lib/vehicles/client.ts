@@ -285,7 +285,10 @@ export async function lookupVehicle(input: {
             miles,
             trim: vehicle.trim || trim,
           })
-        : Promise.resolve({ marketError: "Decoded VIN is missing make, model, or year." }),
+        : Promise.resolve({
+            market: undefined,
+            marketError: "Decoded VIN is missing make, model, or year.",
+          }),
       vinPhoto(vin),
     ]);
 
