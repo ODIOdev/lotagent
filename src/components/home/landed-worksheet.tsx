@@ -18,7 +18,13 @@ import { FEE_PRESETS } from "@/lib/data/fee-presets";
 import { moneyExact, miles as formatMiles, pct, signedMoney } from "@/lib/format";
 import { isZip, normalizeZip, type ZipPlace } from "@/lib/geo/zip";
 import { VehicleCard } from "@/components/home/vehicle-card";
-import { saveWorksheet } from "@/lib/data/worksheets";
+import {
+  clearWorksheetEdit,
+  getWorksheet,
+  saveWorksheet,
+  takeQueuedEdit,
+  updateWorksheet,
+} from "@/lib/data/worksheets";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -142,6 +148,7 @@ function placeLine(place: ZipPlace | null, zip: string, empty: string) {
 export function LandedWorksheet() {
   const router = useRouter();
   const [sheetKey, setSheetKey] = useState(0);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [buyPrice, setBuyPrice] = useState("");
   const [scheduleId, setScheduleId] = useState(FEE_PRESETS[0]?.id ?? "fee-manheim");
   const [auctionPercent, setAuctionPercent] = useState("5");
@@ -211,7 +218,7 @@ export function LandedWorksheet() {
   }
 
   function snapshot(kind: "buy" | "watch") {
-    return saveWorksheet({
+    const entry = {
       kind,
       title:
         [vehicleYear, vehicleBrand, vehicleModel].filter(Boolean).join(" ") || "Untitled lot",
@@ -229,7 +236,11 @@ export function LandedWorksheet() {
       auctionFee,
       transportFee,
       landed,
-    });
+    };
+    const record = editingId ? updateWorksheet(editingId, entry) : saveWorksheet(entry);
+    setEditingId(null);
+    clearWorksheetEdit();
+    return record;
   }
 
   function passSheet() {
@@ -253,6 +264,8 @@ export function LandedWorksheet() {
     setDistanceStatus("idle");
     setDistanceError("");
     setAuctionOpen(false);
+    setEditingId(null);
+    clearWorksheetEdit();
     setSheetKey((value) => value + 1);
   }
 
@@ -264,6 +277,27 @@ export function LandedWorksheet() {
     setDeliveryZip(transport.deliveryZip);
     setRate(transport.rate);
     setPickupCharge(transport.pickup);
+
+    const editId = takeQueuedEdit();
+    if (!editId) return;
+    const item = getWorksheet(editId);
+    if (!item) return;
+    setEditingId(item.id);
+    setBuyPrice(item.buyPrice);
+    setVehicleBrand(item.brand);
+    setVehicleModel(item.model);
+    setVehicleYear(item.year);
+    setVehicleMiles(item.miles || "0");
+    setVehicleTrim(item.trim);
+    setPickupZip(item.pickupZip);
+    setDeliveryZip(item.deliveryZip || transport.deliveryZip);
+    setMiles(item.routeMiles);
+    setAuctionPercent(item.auctionPercent);
+    const match = FEE_PRESETS.find(
+      (preset) => auctionLabel(preset.name) === item.auctionName || preset.name === item.auctionName,
+    );
+    if (match) setScheduleId(match.id);
+    setSheetKey((value) => value + 1);
   }, []);
 
   useEffect(() => {

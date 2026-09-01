@@ -51,6 +51,59 @@ export function worksheetsByKind(kind: WorksheetKind): SavedWorksheet[] {
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
+export function getWorksheet(id: string): SavedWorksheet | undefined {
+  return loadWorksheets().find((item) => item.id === id);
+}
+
+export function deleteWorksheet(id: string): SavedWorksheet[] {
+  const next = loadWorksheets().filter((item) => item.id !== id);
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  }
+  return next;
+}
+
+export function updateWorksheet(
+  id: string,
+  entry: Omit<SavedWorksheet, "id" | "createdAt">,
+): SavedWorksheet {
+  const all = loadWorksheets();
+  const index = all.findIndex((item) => item.id === id);
+  if (index === -1) return saveWorksheet(entry);
+  const next: SavedWorksheet = { ...all[index], ...entry };
+  all[index] = next;
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  }
+  return next;
+}
+
+const EDIT_KEY = "lotagent.worksheet.edit.v1";
+const EDITING_KEY = "lotagent.worksheet.editing.v1";
+
+export function queueWorksheetEdit(id: string) {
+  if (typeof window === "undefined") return;
+  window.sessionStorage.setItem(EDIT_KEY, id);
+  window.sessionStorage.removeItem(EDITING_KEY);
+}
+
+export function takeQueuedEdit(): string | null {
+  if (typeof window === "undefined") return null;
+  const queued = window.sessionStorage.getItem(EDIT_KEY);
+  if (queued) {
+    window.sessionStorage.setItem(EDITING_KEY, queued);
+    window.sessionStorage.removeItem(EDIT_KEY);
+    return queued;
+  }
+  return window.sessionStorage.getItem(EDITING_KEY);
+}
+
+export function clearWorksheetEdit() {
+  if (typeof window === "undefined") return;
+  window.sessionStorage.removeItem(EDIT_KEY);
+  window.sessionStorage.removeItem(EDITING_KEY);
+}
+
 export function saveWorksheet(entry: Omit<SavedWorksheet, "id" | "createdAt">): SavedWorksheet {
   const record: SavedWorksheet = {
     ...entry,
