@@ -31,7 +31,13 @@ async function lookupPlace(zip: string): Promise<ZipPlace> {
     throw Object.assign(new Error("ZIP lookup failed."), { status: 502 });
   }
 
-  const data = (await res.json()) as ZippopotamResponse;
+  const text = await res.text();
+  let data: ZippopotamResponse;
+  try {
+    data = JSON.parse(text) as ZippopotamResponse;
+  } catch {
+    throw Object.assign(new Error("ZIP lookup failed."), { status: 502 });
+  }
   const place = data.places?.[0];
   if (!place) {
     throw Object.assign(new Error(`ZIP ${zip} was not found.`), { status: 404 });

@@ -47,6 +47,56 @@ export function modelsForBrand(brand: string): string[] {
   return findBrand(brand)?.models ?? [];
 }
 
+export type VehicleSearchHit = {
+  kind: "brand" | "model";
+  brand: string;
+  model?: string;
+  label: string;
+};
+
+const BRAND_INDEX: { kind: "brand"; brand: string; label: string; hay: string }[] = FILE.brands.map(
+  (brand) => ({ kind: "brand", brand, label: brand, hay: brand.toLowerCase() }),
+);
+
+const MODEL_INDEX: { kind: "model"; brand: string; model: string; label: string; hay: string; modelHay: string }[] =
+  FILE.brands.flatMap((brand) =>
+    (CATALOG[brand]?.models ?? []).map((model) => ({
+      kind: "model" as const,
+      brand,
+      model,
+      label: `${brand} ${model}`,
+      hay: `${brand} ${model}`.toLowerCase(),
+      modelHay: model.toLowerCase(),
+    })),
+  );
+
+export function searchCatalog(query: string, limit = 8): VehicleSearchHit[] {
+  const q = query.trim().toLowerCase();
+  if (q.length < 1) return [];
+
+  const scored: { hit: VehicleSearchHit; score: number }[] = [];
+  for (const item of BRAND_INDEX) {
+    if (item.hay.startsWith(q)) scored.push({ hit: item, score: 0 });
+    else if (item.hay.includes(q)) scored.push({ hit: item, score: 2 });
+  }
+  for (const item of MODEL_INDEX) {
+    if (item.modelHay.startsWith(q) || item.hay.startsWith(q)) scored.push({ hit: item, score: 1 });
+    else if (item.modelHay.includes(q) || item.hay.includes(q)) scored.push({ hit: item, score: 3 });
+  }
+
+  scored.sort((a, b) => a.score - b.score || a.hit.label.localeCompare(b.hit.label));
+  const seen = new Set<string>();
+  const hits: VehicleSearchHit[] = [];
+  for (const row of scored) {
+    const key = row.hit.kind === "brand" ? `b:${row.hit.brand}` : `m:${row.hit.brand}:${row.hit.model}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    hits.push(row.hit);
+    if (hits.length >= limit) break;
+  }
+  return hits;
+}
+
 export function trimsForModel(brand: string, model: string): string[] {
   const entry = findBrand(brand);
   if (!entry || !model) return [];

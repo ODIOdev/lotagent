@@ -164,6 +164,86 @@
     font-weight: 750;
   }
 
+  .homeTicketRoi {
+    margin: 8px 0 0;
+    padding: 12px;
+    border-radius: 10px;
+    background: #132a4a;
+  }
+
+  .homeTicketRoiHead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .homeTicketRoiHead p {
+    margin: 0;
+    color: #7ec8ea;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .homeTicketRoiHead b {
+    color: #fff;
+    font-size: 22px;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+  }
+
+  .homeTicketRoi ul {
+    display: grid;
+    gap: 6px;
+    margin: 10px 0 0;
+    padding: 10px 0 0;
+    border-top: 1px solid #1c3558;
+    list-style: none;
+  }
+
+  .homeTicketRoi li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    color: #93a4bb;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .homeTicketRoi li b {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .homeTicketRoi .is-up {
+    color: #4ade80;
+  }
+
+  .homeTicketRoi .is-low {
+    color: #fbbf24;
+  }
+
+  .homeTicketRoi .is-down {
+    color: #f87171;
+  }
+
+  .homeTicketRoi small {
+    display: block;
+    margin: 10px 0 0;
+    color: #7d8ea3;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
   .homeSheet,
   .homeVehicle,
   .homeLookup {
@@ -186,10 +266,117 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 12px 8px;
+    overflow: visible;
   }
 
+  .homeVehicleSearch,
   .homeVehicleVin {
     grid-column: 1 / -1;
+  }
+
+  .homeVehicleSearch {
+    position: relative;
+    z-index: 6;
+  }
+
+  .homeVehicleSearchBox {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .homeVehicleSearchBox > svg {
+    position: absolute;
+    left: 12px;
+    width: 16px;
+    height: 16px;
+    color: #5b6b80;
+    pointer-events: none;
+  }
+
+  .homeVehicleSearchClear {
+    position: absolute;
+    right: 8px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #93a4bb;
+    cursor: pointer;
+  }
+
+  .homeVehicleSearchClear svg {
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+  }
+
+  .homeVehicleSearchBox [data-slot="input"] {
+    padding-left: 36px;
+    padding-right: 36px;
+    font-variant-numeric: normal;
+    letter-spacing: 0;
+    font-weight: 600;
+  }
+
+  .homeVehicleSuggest {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    z-index: 7;
+    margin: 0;
+    padding: 10px 0 6px;
+    max-height: 220px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    list-style: none;
+    border: 1px solid #c9d4e0;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 12px 28px #0b1f3a1f;
+  }
+
+  .homeVehicleSuggest button {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+    padding: 10px 12px;
+    border: 0;
+    background: transparent;
+    color: #0b1f3a;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .homeVehicleSuggest button.on,
+  .homeVehicleSuggest button:hover {
+    background: #f3f6fa;
+  }
+
+  .homeVehicleSuggest strong {
+    min-width: 0;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .homeVehicleSuggest small {
+    flex: 0 0 auto;
+    color: #5b6b80;
+    font-size: 11px;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .homeVehicleTrim {
@@ -198,6 +385,37 @@
 
   .homeBlock {
     padding: 14px 14px 16px;
+  }
+
+  .homeSettings {
+    display: grid;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  .homeSettings .homeField {
+    min-width: 0;
+  }
+
+  .homeSettings .homeZip {
+    height: 48px;
+    font-size: 18px;
+  }
+
+  .homeSettingsSave {
+    width: 100%;
+    height: 48px;
+    margin-top: 2px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 750;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .homeSettingsSave:disabled {
+    opacity: 0.45;
+    cursor: default;
   }
 
   .homeBlockHead {
@@ -446,7 +664,7 @@
     width: 100%;
     min-width: 0;
     border-radius: 12px;
-    background: #0b1f3a;
+    background: #eef2f6;
     aspect-ratio: 16 / 10;
   }
 
@@ -454,7 +672,7 @@
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
   }
 
   .homeLookup .homeBreakdown li.homeValueRow {

@@ -1,14 +1,21 @@
 "use client";
 
 import { calculateTransportEstimate } from "@/lib/calc/fees";
+import { projectedProfit, roiPercent } from "@/lib/calc/acquisition";
 import { moneyNum, roundMoney } from "@/lib/calc/money";
 import {
   loadAuctionStore,
   percentForAuction,
   writeAuctionStore,
 } from "@/lib/data/auction-percents";
+import {
+  DEFAULT_DELIVERY_ZIP,
+  DEFAULT_PICKUP,
+  DEFAULT_RATE,
+  loadTransportDefaults,
+} from "@/lib/data/transport-defaults";
 import { FEE_PRESETS } from "@/lib/data/fee-presets";
-import { moneyExact, miles as formatMiles } from "@/lib/format";
+import { moneyExact, miles as formatMiles, pct, signedMoney } from "@/lib/format";
 import { isZip, normalizeZip, type ZipPlace } from "@/lib/geo/zip";
 import { VehicleCard } from "@/components/home/vehicle-card";
 import { saveWorksheet } from "@/lib/data/worksheets";
@@ -16,12 +23,62 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const DEFAULT_DELIVERY_ZIP = "17545";
-const DEFAULT_RATE = 1.35;
-const DEFAULT_PICKUP = 95;
+const LOW_PROFIT_USD = 500;
+const LOW_ROI_PERCENT = 8;
 
 function auctionLabel(name: string) {
   return name.replace(" (sample)", "");
+}
+
+function roiTone(roi: number | null, profit: number) {
+  if (roi == null) return undefined;
+  if (roi < 0 || profit < 0) return "is-down";
+  if (profit < LOW_PROFIT_USD || roi < LOW_ROI_PERCENT) return "is-low";
+  return "is-up";
+}
+
+type ZipRoutePayload = {
+  miles?: number;
+  from?: ZipPlace;
+  to?: ZipPlace;
+  error?: string;
+};
+
+function distanceErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message : "";
+  if (!message || /unexpected token|not valid json|<!doctype/i.test(message)) {
+    return "Could not measure that route.";
+  }
+  return message;
+}
+
+async function readZipRoute(origin: string, dest: string, signal: AbortSignal) {
+  let lastError: Error | null = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) {
+      await new Promise((resolve) => window.setTimeout(resolve, 350 * attempt));
+    }
+    try {
+      const res = await fetch(`/api/zip-distance?from=${origin}&to=${dest}`, { signal });
+      const text = await res.text();
+      let data: ZipRoutePayload;
+      try {
+        data = JSON.parse(text) as ZipRoutePayload;
+      } catch {
+        lastError = new Error("Could not measure that route.");
+        continue;
+      }
+      if (!res.ok) throw new Error(data.error || "Could not measure that route.");
+      return data;
+    } catch (error) {
+      if (signal.aborted) throw error;
+      lastError = new Error(distanceErrorMessage(error));
+      if (error instanceof Error && /was not found|5-digit/i.test(error.message)) {
+        throw lastError;
+      }
+    }
+  }
+  throw lastError ?? new Error("Could not measure that route.");
 }
 
 function MoneyInput({
@@ -95,14 +152,19 @@ export function LandedWorksheet() {
   const [vehicleYear, setVehicleYear] = useState("");
   const [vehicleMiles, setVehicleMiles] = useState("0");
   const [vehicleTrim, setVehicleTrim] = useState("");
+  const [vehicleMarket, setVehicleMarket] = useState<{
+    tradeInUsd?: number;
+    wholesaleUsd?: number;
+    retailUsd?: number;
+  } | null>(null);
 
   const [pickupZip, setPickupZip] = useState("");
   const [deliveryZip, setDeliveryZip] = useState(DEFAULT_DELIVERY_ZIP);
   const [pickupPlace, setPickupPlace] = useState<ZipPlace | null>(null);
   const [deliveryPlace, setDeliveryPlace] = useState<ZipPlace | null>(null);
   const [miles, setMiles] = useState("");
-  const [rate, setRate] = useState(String(DEFAULT_RATE));
-  const [pickupCharge, setPickupCharge] = useState(String(DEFAULT_PICKUP));
+  const [rate, setRate] = useState(DEFAULT_RATE);
+  const [pickupCharge, setPickupCharge] = useState(DEFAULT_PICKUP);
   const [transportOverride, setTransportOverride] = useState(false);
   const [transportManual, setTransportManual] = useState("");
   const [distanceStatus, setDistanceStatus] = useState<"idle" | "loading" | "error">("idle");
@@ -130,13 +192,25 @@ export function LandedWorksheet() {
       ? estimatedTransport
       : 0;
   const landed = roundMoney(bid + auctionFee + transportFee);
+  const wholesale = vehicleMarket?.wholesaleUsd;
+  const sellEstimate = wholesale != null ? wholesale : 0;
+  const profitEstimate = wholesale != null ? projectedProfit(wholesale, landed) : 0;
+  const roiEstimate = wholesale != null && landed > 0 ? roiPercent(profitEstimate, landed) : null;
+  const tradeRoi =
+    vehicleMarket?.tradeInUsd != null && landed > 0
+      ? roiPercent(projectedProfit(vehicleMarket.tradeInUsd, landed), landed)
+      : null;
+  const retailRoi =
+    vehicleMarket?.retailUsd != null && landed > 0
+      ? roiPercent(projectedProfit(vehicleMarket.retailUsd, landed), landed)
+      : null;
 
   function go(path: string) {
     const query = typeof window === "undefined" ? "" : window.location.search.replace(/^\?/, "");
     router.push(query ? `${path}?${query}` : path);
   }
 
-  function snapshot(kind: "buy" | "draft") {
+  function snapshot(kind: "buy" | "watch") {
     return saveWorksheet({
       kind,
       title:
@@ -165,13 +239,15 @@ export function LandedWorksheet() {
     setVehicleYear("");
     setVehicleMiles("0");
     setVehicleTrim("");
+    setVehicleMarket(null);
     setPickupZip("");
-    setDeliveryZip(DEFAULT_DELIVERY_ZIP);
+    const transport = loadTransportDefaults();
+    setDeliveryZip(transport.deliveryZip);
     setPickupPlace(null);
     setDeliveryPlace(null);
     setMiles("");
-    setRate(String(DEFAULT_RATE));
-    setPickupCharge(String(DEFAULT_PICKUP));
+    setRate(transport.rate);
+    setPickupCharge(transport.pickup);
     setTransportOverride(false);
     setTransportManual("");
     setDistanceStatus("idle");
@@ -184,6 +260,10 @@ export function LandedWorksheet() {
     const store = loadAuctionStore();
     setScheduleId(store.selected);
     setAuctionPercent(percentForAuction(store, store.selected));
+    const transport = loadTransportDefaults();
+    setDeliveryZip(transport.deliveryZip);
+    setRate(transport.rate);
+    setPickupCharge(transport.pickup);
   }, []);
 
   useEffect(() => {
@@ -191,26 +271,12 @@ export function LandedWorksheet() {
     const to = normalizeZip(deliveryZip);
     const controller = new AbortController();
 
-    async function readRoute(origin: string, dest: string) {
-      const res = await fetch(`/api/zip-distance?from=${origin}&to=${dest}`, {
-        signal: controller.signal,
-      });
-      const data = (await res.json()) as {
-        miles?: number;
-        from?: ZipPlace;
-        to?: ZipPlace;
-        error?: string;
-      };
-      if (!res.ok) throw new Error(data.error || "Could not measure that route.");
-      return data;
-    }
-
     const timer = window.setTimeout(async () => {
       setDistanceError("");
       try {
         if (isZip(from) && isZip(to)) {
           setDistanceStatus("loading");
-          const data = await readRoute(from, to);
+          const data = await readZipRoute(from, to, controller.signal);
           if (typeof data.miles !== "number") throw new Error("Could not measure that route.");
           setMiles(String(data.miles));
           setPickupPlace(data.from ?? null);
@@ -222,13 +288,13 @@ export function LandedWorksheet() {
         setMiles("");
         setDistanceStatus("idle");
         if (isZip(from)) {
-          const data = await readRoute(from, from);
+          const data = await readZipRoute(from, from, controller.signal);
           setPickupPlace(data.from ?? null);
         } else {
           setPickupPlace(null);
         }
         if (isZip(to)) {
-          const data = await readRoute(to, to);
+          const data = await readZipRoute(to, to, controller.signal);
           setDeliveryPlace(data.from ?? data.to ?? null);
         } else {
           setDeliveryPlace(null);
@@ -236,7 +302,7 @@ export function LandedWorksheet() {
       } catch (error) {
         if (controller.signal.aborted) return;
         setDistanceStatus("error");
-        setDistanceError(error instanceof Error ? error.message : "Could not measure that route.");
+        setDistanceError(distanceErrorMessage(error));
       }
     }, 280);
 
@@ -280,6 +346,7 @@ export function LandedWorksheet() {
           onYear={setVehicleYear}
           onMiles={setVehicleMiles}
           onTrim={setVehicleTrim}
+          onMarket={setVehicleMarket}
         />
 
         <div className="homeSheet">
@@ -509,11 +576,11 @@ export function LandedWorksheet() {
             type="button"
             className="homeDecideDraft"
             onClick={() => {
-              snapshot("draft");
+              snapshot("watch");
               go("/watch");
             }}
           >
-            Draft
+            Watch
           </button>
         </div>
 
@@ -534,6 +601,46 @@ export function LandedWorksheet() {
               <dd>{moneyExact(transportFee)}</dd>
             </div>
           </dl>
+          <div className="homeTicketRoi">
+            <div className="homeTicketRoiHead">
+              <p>Potential ROI</p>
+              <b className={roiTone(roiEstimate, profitEstimate)}>
+                {roiEstimate == null ? "—" : pct(roiEstimate)}
+              </b>
+            </div>
+            {wholesale != null && landed > 0 ? (
+              <>
+                <ul>
+                  <li>
+                    <span>Est. sell</span>
+                    <b>{moneyExact(sellEstimate)}</b>
+                  </li>
+                  <li>
+                    <span>Landed</span>
+                    <b>{moneyExact(landed)}</b>
+                  </li>
+                  <li>
+                    <span>Profit</span>
+                    <b className={roiTone(roiEstimate, profitEstimate)}>{signedMoney(profitEstimate)}</b>
+                  </li>
+                </ul>
+                <small>
+                  Wholesale − (buy + auction + transport).
+                  {tradeRoi != null || retailRoi != null
+                    ? ` Trade-in ${tradeRoi == null ? "—" : pct(tradeRoi)} · Retail ${retailRoi == null ? "—" : pct(retailRoi)}.`
+                    : ""}
+                </small>
+              </>
+            ) : (
+              <small>
+                {wholesale == null
+                  ? vehicleBrand && vehicleModel && vehicleMiles.replace(/\D/g, "") && vehicleMiles !== "0"
+                    ? "Fetching market values…"
+                    : "Add a vehicle for a market estimate."
+                  : "Enter a buy price to estimate ROI."}
+              </small>
+            )}
+          </div>
         </aside>
       </div>
 

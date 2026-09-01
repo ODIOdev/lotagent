@@ -1,3 +1,4 @@
+import { catalogPhoto, catalogPhotoPath, tokensMatch } from "@/lib/vehicles/photo";
 import type { DecodedVehicle, VehicleLookup, VehicleRecall } from "@/lib/vehicles/types";
 import { bandsFromRetail } from "@/lib/vehicles/values";
 import { isVin, normalizeVin } from "@/lib/vehicles/vin";
@@ -150,7 +151,9 @@ async function listingPhoto(input: { make: string; model: string; year: string }
   for (const params of searches) {
     try {
       const data = await vehiclesGet<{ results?: ListingRow[] }>(`/v1/vehicles/listings?${params}`);
-      const photos = (data.results ?? []).filter((row) => row.primaryImage);
+      const photos = (data.results ?? []).filter(
+        (row) => row.primaryImage && tokensMatch(input.model, `${row.year ?? ""} ${row.make ?? ""} ${row.model ?? ""}`),
+      );
       if (!photos.length) continue;
       const sameYear = photos.filter((row) => row.year === year);
       return (sameYear[0] ?? photos[0])?.primaryImage ?? undefined;
@@ -289,7 +292,13 @@ export async function lookupVehicle(input: {
             market: undefined,
             marketError: "Decoded VIN is missing make, model, or year.",
           }),
-      vinPhoto(vin),
+      marketMake && marketModel && marketYear
+        ? catalogPhoto({ make: marketMake, model: marketModel, year: marketYear }).then(async (url) =>
+            url?.includes("imagin.studio")
+              ? catalogPhotoPath({ make: marketMake, model: marketModel, year: marketYear })
+              : url ?? vinPhoto(vin),
+          )
+        : vinPhoto(vin),
     ]);
 
     return {
@@ -298,7 +307,7 @@ export async function lookupVehicle(input: {
       specifications: specs?.specifications,
       market: priced.market,
       marketError: priced.marketError,
-      photoUrl: photoUrl,
+      photoUrl,
       recalls: recalls
         ? { count: recalls.count ?? recalls.recalls?.length ?? 0, items: recalls.recalls ?? [] }
         : undefined,
@@ -313,7 +322,11 @@ export async function lookupVehicle(input: {
 
   const [priced, photoUrl] = await Promise.all([
     marketValueSafe({ make, model, year, miles, trim }),
-    listingPhoto({ make, model, year }),
+    catalogPhoto({ make, model, year }).then(async (url) =>
+      url?.includes("imagin.studio")
+        ? catalogPhotoPath({ make, model, year })
+        : url ?? listingPhoto({ make, model, year }),
+    ),
   ]);
 
   return {

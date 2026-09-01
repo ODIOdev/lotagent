@@ -1,3 +1,5 @@
+import { TransportDefaultsForm } from "@/components/settings/transport-defaults";
+
 export default function SettingsPage() {
   return (
     <main className="la page">
@@ -10,10 +12,10 @@ export default function SettingsPage() {
           <div className="homeBlockHead">
             <div>
               <h2>Defaults</h2>
-              <p>Transport rate, delivery ZIP, and fee mode</p>
+              <p>Transport rate, delivery ZIP, and pickup fee</p>
             </div>
           </div>
-          <p className="homeHint">Delivery ZIP defaults to 17545. Transport is $1.35 per mile plus $95 pickup.</p>
+          <TransportDefaultsForm />
         </section>
       </div>
     </main>

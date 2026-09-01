@@ -1,6 +1,6 @@
 const STORAGE_KEY = "lotagent.worksheets.v1";
 
-export type WorksheetKind = "buy" | "draft";
+export type WorksheetKind = "buy" | "watch";
 
 export interface SavedWorksheet {
   id: string;
@@ -28,8 +28,18 @@ export function loadWorksheets(): SavedWorksheet[] {
   const raw = window.localStorage.getItem(STORAGE_KEY);
   if (!raw) return [];
   try {
-    const parsed = JSON.parse(raw) as SavedWorksheet[];
-    return Array.isArray(parsed) ? parsed : [];
+    const parsed = JSON.parse(raw) as Array<Omit<SavedWorksheet, "kind"> & { kind?: string }>;
+    if (!Array.isArray(parsed)) return [];
+    let migrated = false;
+    const next = parsed.map((item) => {
+      if (item.kind === "draft") {
+        migrated = true;
+        return { ...item, kind: "watch" as const };
+      }
+      return item as SavedWorksheet;
+    });
+    if (migrated) window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    return next;
   } catch {
     return [];
   }
